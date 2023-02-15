@@ -8,7 +8,7 @@ contract BasicNFT is ERC721{
     //
 
     uint256 private s_tokenCounter;
-    String public constant TOKEN_URI = "http://bafybeibrgyezr5muh6qekxsnt4st5ljzz4ed5slivop2vzivgsl2y3ocim.ipfs.localhost:8080/";
+    string public constant TOKEN_URI = "http://bafybeibrgyezr5muh6qekxsnt4st5ljzz4ed5slivop2vzivgsl2y3ocim.ipfs.localhost:8080/";
 
     constructor() ERC721 ("KAMITA", "KHMT") {
         s_tokenCounter = 0;
@@ -21,7 +21,7 @@ contract BasicNFT is ERC721{
     }
 
     function getTokenCounter() public view returns(uint256) {
-        return s_tokenCounter
+        return s_tokenCounter;
     }
 
 }
