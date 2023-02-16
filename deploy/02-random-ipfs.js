@@ -2,7 +2,18 @@ const { network, ethers } = require("hardhat")
 const { developmentChains, networkConfig } = require("../helper.config")
 const { storeImages } = require("../utils/uploadToPinata")
 
-const imagesLocation = '../images/randomNFT'
+const imagesLocation = '/home/ts/Developpement/Web3.0/ERC-721/images/randomNFT'
+const metadataTemplate = {
+    name:"",
+    description:"",
+    image:"",
+    attributes: [
+        {
+            trait_type: "Cuteness",
+            value: 100,
+        }
+    ]
+}
 
 module.exports = async ({getNamedAccounts, deployments}) => {
     const {deploy, log} = deployments
@@ -12,7 +23,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     let vrfCoordinatorV2Address, subscriptionId, tokenUris
 
     // pinata / nft.storage / ipfs
-    if (process.env.UPLOAD_TO_PINATA = "true") {
+    if (process.env.UPLOAD_TO_PINATA == "true") {
         tokenUris = await handleTokenUris()
     }
 
@@ -28,7 +39,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
         subscriptionId = networkConfig[chainId].subscriptionId
     }
     log("___________---__________")
-    await storeImages(imagesLocation)
+    // await storeImages(imagesLocation)
     // const args = [
     //     vrfCoordinatorV2Address, 
     //     subscriptionId, 
@@ -42,8 +53,19 @@ module.exports = async ({getNamedAccounts, deployments}) => {
 async function handleTokenUris() {
     tokenUris = []
     //Store the images to ipfs
+    const {response: imageUploadResponses, files} = await storeImages(imagesLocation)
+    for (imageUploadResponseIndex in imageUploadResponses) {
+        //create metadata
+        let tokenUriMetadata = {...metadataTemplate}
+        tokenUriMetadata.name = files[imageUploadResponseIndex].replace(".png","")
+        tokenUriMetadata.description = `An adorable ${tokenUriMetadata.name} pup!`
+    }
 
     return tokenUris
+}
+
+async function  storeTokenUriMetaData(metadata) {
+
 }
 
 module.exports.tags = ['all', 'randomipfs', 'main']
